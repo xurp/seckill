@@ -17,6 +17,7 @@ import java.util.List;
 
 @Service("seckillGoodsService")
 public class SeckillGoodsServiceImpl implements SeckillGoodsService {
+	//这些mapper在generatorConfig.xml里面扫描进来，所以Mapper类没有加注解
     @Autowired
     GoodsMapper goodsMapper;
     @Override

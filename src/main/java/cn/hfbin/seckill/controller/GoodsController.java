@@ -2,12 +2,14 @@ package cn.hfbin.seckill.controller;
 
 import cn.hfbin.seckill.bo.GoodsBo;
 import cn.hfbin.seckill.common.Const;
+import cn.hfbin.seckill.entity.AccessTime;
 import cn.hfbin.seckill.entity.User;
 import cn.hfbin.seckill.redis.GoodsKey;
 import cn.hfbin.seckill.redis.RedisService;
 import cn.hfbin.seckill.redis.UserKey;
 import cn.hfbin.seckill.result.CodeMsg;
 import cn.hfbin.seckill.result.Result;
+import cn.hfbin.seckill.service.MyCatService;
 import cn.hfbin.seckill.service.SeckillGoodsService;
 import cn.hfbin.seckill.util.CookieUtil;
 import cn.hfbin.seckill.vo.GoodsDetailVo;
@@ -24,6 +26,8 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,13 +45,23 @@ public class GoodsController {
     RedisService redisService;
     @Autowired
     SeckillGoodsService seckillGoodsService;
-
+    @Autowired
+    MyCatService myCatService;
 
     @Autowired
     ThymeleafViewResolver thymeleafViewResolver;
 
     @Autowired
     ApplicationContext applicationContext;
+    
+    @RequestMapping("/mycat")
+    @ResponseBody
+    public AccessTime mycat(Model model, HttpServletRequest request, HttpServletResponse response){
+    	AccessTime a=new AccessTime();
+    	a.setTime(new Date());
+    	myCatService.insert(a);
+    	return a;
+    }
 
     @RequestMapping("/list")
     @ResponseBody

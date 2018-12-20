@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.hfbin.seckill.dao.AccessTimeMapper" >
+  <resultMap id="BaseResultMap" type="cn.hfbin.seckill.entity.AccessTime" >
+    <constructor >
+      <idArg column="id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  
+  
+  <insert id="insert" parameterType="cn.hfbin.seckill.entity.AccessTime" >
+    insert into accesstime (id, time)
+    values (#{id,jdbcType=BIGINT}, #{time,jdbcType=TIMESTAMP})
+  </insert>
+  
+</mapper>

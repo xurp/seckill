@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 public class SeckillApplication extends SpringBootServletInitializer {
 //http://localhost:8888/page/login
 //http://localhost:8888/goods/list
+//http://localhost:8888/goods/mycat
 //18077200000 123456
 	//两个注意点：一：可能是用mybatis，所以用了@MapperScan导入；二：extends了SpringBootServletInitializer，待查
 	public static void main(String[] args) {
