@@ -32,6 +32,7 @@ public class HttpTest {
 		
 		String url = "http://localhost:8888/goods/list";
 		String body = get(url, params);
+		//真的要压力测试的话，要用线程，for没用的
 		//System.out.println("服务器响应的内容:"+body);
 	}
 	
