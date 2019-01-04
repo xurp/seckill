@@ -9,6 +9,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 @Service
 public class RedisPoolFactory {
+	//使用RedisConfig读取配置文件里的参数，配置Jedis池
 
 	@Autowired
 	RedisConfig redisConfig;

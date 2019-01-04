@@ -14,7 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * 重新设置用户session在redis的有效期
+ * 重新设置用户session在redis的有效期，过滤器应该是在WebConfig里注册的
+ * 我猜测使用Filter的原因：这是一个全局的配置，不像interceptor可能要配合每个方法上的注解
  */
 @Component
 public class SessionExpireFilter implements Filter {

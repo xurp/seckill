@@ -42,6 +42,7 @@ public class CookieUtil {
     //e:A.hfbin.cn/test       cookie:domain=A.hfbin.cn;path="/test"
 
     public static void writeLoginToken(HttpServletResponse response, String token){
+    	//这个cookie可以在google浏览器地址左侧的i里面找到
         Cookie ck = new Cookie(COOKIE_NAME,token);
         ck.setDomain(COOKIE_DOMAIN);
         ck.setPath("/");//代表设置在根目录

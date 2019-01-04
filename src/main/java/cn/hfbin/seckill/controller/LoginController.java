@@ -39,6 +39,7 @@ public class LoginController {
     @RequestMapping("/login")
     @ResponseBody
     public Result<User> doLogin(HttpServletResponse response, HttpSession session , @Valid LoginParam loginParam) {
+    	//用LoginParam作为实体接收参数，用@Valid启用参数验证，在全局Exception里捕获
         Result<User> login = userService.login(loginParam);
         if (login.isSuccess()){
             CookieUtil.writeLoginToken(response,session.getId());//放到cookie里

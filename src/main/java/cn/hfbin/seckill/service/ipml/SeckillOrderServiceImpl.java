@@ -68,6 +68,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
             //添加信息进订单
             long orderId = orderService.addOrder(orderInfo);
             log.info("orderId -->" +orderId+"");
+            //数据库里SeckillOrder的三个参数在orderInfo里都有，存疑
             SeckillOrder seckillOrder = new SeckillOrder();
             seckillOrder.setGoodsId(goods.getId());
             seckillOrder.setOrderId(orderInfo.getId());
@@ -76,7 +77,7 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
             seckillOrderMapper.insertSelective(seckillOrder);
             return orderInfo;
         }else {
-            setGoodsOver(goods.getId());
+            setGoodsOver(goods.getId());//没办法减库存——哪里出了问题——所以认为秒杀失败，直接返回（把秒杀失败的状态存到redis里）
             return null;
         }
     }
@@ -95,10 +96,10 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
         if(order != null) {//秒杀成功
             return order.getOrderId();
         }else {
-            boolean isOver = getGoodsOver(goodsId);
+            boolean isOver = getGoodsOver(goodsId);//如果redis读出该商品已经over，返回-1（失败），否则返回0（还在排队）
             if(isOver) {
                 return -1;
-            }else {
+            }else {//既不成功也不失败，因为还在队列里排队，所以数据库里order还找不到，前台会轮询查询秒杀状态
                 return 0;
             }
         }

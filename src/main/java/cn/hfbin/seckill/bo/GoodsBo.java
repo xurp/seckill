@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GoodsBo{
-//Bo是什么意思，待查
+//Bo--业务对象
 	private BigDecimal seckillPrice;
 
 	private Integer stockCount;

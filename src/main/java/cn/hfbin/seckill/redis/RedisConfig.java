@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
+//下面的注解是从application.properties里面读redis开头的参数，然后再RedisPoolFactory里面用这个类的参数
 @ConfigurationProperties(prefix="redis")
 public class RedisConfig {
 	private String host;

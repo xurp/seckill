@@ -30,15 +30,27 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         // excludePathPatterns 用户排除拦截
         // 映射为 user 的控制器下的所有映射
         //registry.addInterceptor(authorityInterceptor).addPathPatterns("/user/login").excludePathPatterns("/index", "/");
+    	/*  附：api项目里的写法，当时这样写是因为interceptor里注入service用不了，但本项目是可以的
+    	 *  @Bean
+             public HandlerInterceptor getApiAuthInterceptor(){
+                 return new ApiAuthInterceptor();
+             }
+
+             @Override
+             public void addInterceptors(InterceptorRegistry registry) {
+                registry.addInterceptor(getApiAuthInterceptor())
+                    .addPathPatterns("/**");
+             }
+    	 */
         registry.addInterceptor(authorityInterceptor);
         super.addInterceptors(registry);
     }
-
+    //我的理解是：以下两个方法注册过滤器SessionExpireFilter
     @Bean("myFilter")
     public Filter uploadFilter() {
         return new SessionExpireFilter();
     }
-
+  
     @Bean
     public FilterRegistrationBean uploadFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();

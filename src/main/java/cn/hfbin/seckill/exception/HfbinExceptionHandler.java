@@ -24,6 +24,7 @@ public class HfbinExceptionHandler {
 			HfbinException ex = (HfbinException)e;
 			return Result.error(ex.getCm());
 		}else if(e instanceof BindException) {
+			//参数校验异常
 			BindException ex = (BindException)e;
 			List<ObjectError> errors = ex.getAllErrors();
 			ObjectError error = errors.get(0);

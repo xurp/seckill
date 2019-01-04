@@ -9,7 +9,7 @@ package cn.hfbin.seckill.result;
  * Such description:
  */
 public class Result<T> {
-
+    //我的理解是：这里的success和error可能就对应ajax的success和error
 	private int code;
 	private String msg;
 	private T data;

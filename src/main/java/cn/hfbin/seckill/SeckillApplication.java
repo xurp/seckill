@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 @MapperScan("cn.hfbin.seckill.dao")
 public class SeckillApplication extends SpringBootServletInitializer {
+//可参考README的简介
 //http://localhost:8888/page/login
 //http://localhost:8888/goods/list
 //http://localhost:8888/goods/mycat

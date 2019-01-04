@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService{
         String dbPwd= user.getPassword();
         String saltDB = user.getSalt();
         String calcPass = MD5Util.formPassToDBPass(loginParam.getPassword(), saltDB);
+        //password已经在前台用最简单的方式加密（只是简单实现），前台获得success后用window.location.href跳转到/goods/list（应该是严重安全漏洞，只是简单实现而已）
         if(!StringUtils.equals(dbPwd , calcPass)){
             return Result.error(CodeMsg.PASSWORD_ERROR);
         }

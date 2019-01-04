@@ -51,10 +51,11 @@ public class SeckillController implements InitializingBean {
     @Autowired
     MQSender mqSender;
 
+    //Long：商品ID Boolean：商品是否秒杀完毕（库存），初始化为false
     private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
 
     /**
-     * 系统初始化
+     * 系统初始化，凡是implements InitializingBean的类，在bean初始化时候会运行afterPropertiesSet方法
      */
     public void afterPropertiesSet() throws Exception {
         List<GoodsBo> goodsList = seckillGoodsService.getSeckillGoodsList();
@@ -62,11 +63,30 @@ public class SeckillController implements InitializingBean {
             return;
         }
         for (GoodsBo goods : goodsList) {
+        	//初始化：把每个商品的库存放到redis里，本类的list方法用到了这个
             redisService.set(GoodsKey.getSeckillGoodsStock, "" + goods.getId(), goods.getStockCount(), Const.RedisCacheExtime.GOODS_LIST);
             localOverMap.put(goods.getId(), false);
         }
     }
-
+    
+    //这里用的是annotations里的注解
+    //前台点秒杀，首先访问到这里
+    @AccessLimit(seconds=5, maxCount=5, needLogin=true)
+    @RequestMapping(value = "/path", method = RequestMethod.GET)
+    @ResponseBody
+    public Result<String> getMiaoshaPath(HttpServletRequest request, User user,
+                                         @RequestParam("goodsId") long goodsId) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        user = redisService.get(UserKey.getByName, loginToken, User.class);
+        if (user == null) {
+            return Result.error(CodeMsg.USER_NO_LOGIN);
+        }
+        String path = seckillOrderService.createMiaoshaPath(user, goodsId);
+        //返回一个加密的后缀
+        return Result.success(path);
+    }
+    
+    //这个方法没用到
     @RequestMapping("/seckill2")
     public String list2(Model model,
                         @RequestParam("goodsId") long goodsId, HttpServletRequest request) {
@@ -97,7 +117,7 @@ public class SeckillController implements InitializingBean {
         return "order_detail";
     }
 
-    //似乎这个是优化上面的，因为用了mq
+    //似乎这个是优化上面的，因为用了mq，goods_detail的doMiaosha()使用的是这个方法
     @RequestMapping(value = "/{path}/seckill", method = RequestMethod.POST)
     @ResponseBody
     public Result<Integer> list(Model model,
@@ -110,7 +130,7 @@ public class SeckillController implements InitializingBean {
         if (user == null) {
             return Result.error(CodeMsg.USER_NO_LOGIN);
         }
-        //验证path
+        //验证加密过的后缀path
         boolean check = seckillOrderService.checkPath(user, goodsId, path);
         if (!check) {
             return Result.error(CodeMsg.REQUEST_ILLEGAL);
@@ -120,13 +140,13 @@ public class SeckillController implements InitializingBean {
         if (over) {
             return Result.error(CodeMsg.MIAO_SHA_OVER);
         }/**/
-        //预减库存
+        //预减库存，看是否秒杀结束（库存没了）
         long stock = redisService.decr(GoodsKey.getSeckillGoodsStock, "" + goodsId);//10
         if (stock < 0) {
             localOverMap.put(goodsId, true);
             return Result.error(CodeMsg.MIAO_SHA_OVER);
         }
-        //判断是否已经秒杀到了
+        //判断是否已经秒杀到了（同用户同商品重复秒杀）
         SeckillOrder order = seckillOrderService.getSeckillOrderByUserIdGoodsId(user.getId(), goodsId);
         if (order != null) {
             return Result.error(CodeMsg.REPEATE_MIAOSHA);
@@ -135,9 +155,12 @@ public class SeckillController implements InitializingBean {
         SeckillMessage mm = new SeckillMessage();
         mm.setUser(user);
         mm.setGoodsId(goodsId);
-        mqSender.sendSeckillMessage(mm);
-        return Result.success(0);//排队中
-        /*//判断库存
+        mqSender.sendSeckillMessage(mm);//在消息队列的接收方MQReceiver完成操作
+        return Result.success(0);//排队中，直接返回结果（用户并不关心后台数据库之类的操作）
+        /*
+         * 另一种做法，也就是list2的做法：不用redis维护库存，直接数据库操作
+         *
+        //判断库存
         GoodsBo goods = seckillGoodsService.getseckillGoodsBoByGoodsId(goodsId);
         if(goods == null) {
             return Result.error(CodeMsg.NO_GOODS);
@@ -157,8 +180,8 @@ public class SeckillController implements InitializingBean {
     }
 
     /**
-     * 客户端轮询查询是否下单成功
-     * orderId：成功
+     * 客户端轮询查询是否下单成功，如果成功弹出“恭喜你，秒杀成功！查看订单？”
+     * 某orderId：成功，已生成订单
      * -1：秒杀失败
      * 0： 排队中
      */
@@ -173,18 +196,5 @@ public class SeckillController implements InitializingBean {
         long result = seckillOrderService.getSeckillResult((long) user.getId(), goodsId);
         return Result.success(result);
     }
-    //这里用的是annotations里的注解
-    @AccessLimit(seconds=5, maxCount=5, needLogin=true)
-    @RequestMapping(value = "/path", method = RequestMethod.GET)
-    @ResponseBody
-    public Result<String> getMiaoshaPath(HttpServletRequest request, User user,
-                                         @RequestParam("goodsId") long goodsId) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        user = redisService.get(UserKey.getByName, loginToken, User.class);
-        if (user == null) {
-            return Result.error(CodeMsg.USER_NO_LOGIN);
-        }
-        String path = seckillOrderService.createMiaoshaPath(user, goodsId);
-        return Result.success(path);
-    }
+    
 }
