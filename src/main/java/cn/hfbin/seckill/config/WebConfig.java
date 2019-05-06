@@ -54,6 +54,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public FilterRegistrationBean uploadFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
+        //myFilter就是上面的Bean name
         registration.setFilter(new DelegatingFilterProxy("myFilter"));
         registration.addUrlPatterns("/**");
         registration.setName("MyFilter");

@@ -7,7 +7,7 @@ package cn.hfbin.seckill.common;
  * Such description:
  */
 public class Const {
-//用Class包一个interface什么意思，待查
+//用Class包一个interface什么意思，待查；用法：Const.RedisCacheExtime.REDIS_SESSION_EXTIME
     public interface RedisCacheExtime{
         int REDIS_SESSION_EXTIME = 60 * 30;//30分钟
         int GOODS_LIST = 60 * 30 * 24;//1分钟
