@@ -117,7 +117,7 @@ public class SeckillController implements InitializingBean {
         return "order_detail";
     }
 
-    //似乎这个是优化上面的，因为用了mq，goods_detail的doMiaosha()使用的是这个方法
+    //似乎这个是优化上面的，因为用了mq，goods_detail的doMiaosha()使用的是这个方法,应该就是点了秒杀之后最终执行list
     @RequestMapping(value = "/{path}/seckill", method = RequestMethod.POST)
     @ResponseBody
     public Result<Integer> list(Model model,

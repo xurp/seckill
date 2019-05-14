@@ -20,6 +20,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public long addOrder(OrderInfo orderInfo) {
+    	//就是插入这个OrderInfo
         return ordeInfoMapper.insertSelective(orderInfo);
     }
 

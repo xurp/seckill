@@ -43,7 +43,7 @@ public class SeckillOrderController {
                                       @RequestParam("orderId") long orderId , HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         User user = redisService.get(UserKey.getByName, loginToken, User.class);
-        //LoginController登录成功后用redis缓存了USER，这里没用注解+interceptor做权限控制
+        //LoginController登录成功后用redis缓存了USER，这里不像API项目,没用注解+interceptor做权限控制
         if(user == null) {
             return Result.error(CodeMsg.USER_NO_LOGIN);
         }

@@ -15,7 +15,8 @@ public class RedisService {
 	JedisPool jedisPool;
 	
 	/**
-	 * 获取当个对象,这里获取string然后转成对象T.似乎所有对象都是压缩成string存，另一种是作为hash存，即key是实体类，里面的k-v是属性名和值
+	 * 获取单个对象,这里获取string然后转成对象T.似乎所有对象都是压缩成string存，另一种是作为hash存，即key是实体类，里面的k-v是属性名和值
+	 * 具体可以看redis运维这本书
 	 * */
 	public <T> T get(KeyPrefix prefix, String key,  Class<T> clazz) {
 		 Jedis jedis = null;
@@ -171,7 +172,7 @@ public class RedisService {
 
 	private void returnToPool(Jedis jedis) {
 		 if(jedis != null) {
-			 jedis.close();
+			 jedis.close();//返回连接池
 		 }
 	}
 

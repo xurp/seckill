@@ -33,6 +33,7 @@ public class SeckillGoodsServiceImpl implements SeckillGoodsService {
     @Override
     public int reduceStock(long goodsId) {
     	//这个方法只被SeckillOrder的service调用，所以不用加事务
+    	//UPDATE seckill_goods   SET stock_count = stock_count -1   WHERE goods_id = #{goodsId}
         return goodsMapper.updateStock(goodsId);
     }
 }
