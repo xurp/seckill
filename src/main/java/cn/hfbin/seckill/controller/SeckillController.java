@@ -185,6 +185,7 @@ public class SeckillController implements InitializingBean {
      * -1：秒杀失败
      * 0： 排队中
      */
+    //见static/goods_detail.htm的getMiaoshaResult。当前台点了秒杀后，不停轮询（setTimeout）直到秒杀结果出来为止
     @RequestMapping(value = "/result", method = RequestMethod.GET)
     @ResponseBody
     public Result<Long> miaoshaResult(@RequestParam("goodsId") long goodsId, HttpServletRequest request) {
